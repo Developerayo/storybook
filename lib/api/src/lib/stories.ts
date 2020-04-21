@@ -99,6 +99,16 @@ export interface StoriesRaw {
   [id: string]: StoryInput;
 }
 
+type Parameters = { [key: string]: any };
+type StoryKind = string;
+export interface StoryStoreData {
+  globalParameters: Parameters;
+  kindParameters: {
+    [kind: StoryKind]: Parameters
+  };
+  stories: 
+}
+
 const warnUsingHierarchySeparatorsAndShowRoots = deprecate(
   () => {},
   dedent`

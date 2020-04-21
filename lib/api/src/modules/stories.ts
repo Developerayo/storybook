@@ -14,11 +14,12 @@ import {
   StoriesHash,
   Story,
   Group,
-  StoriesRaw,
+  StoryStoreData,
   StoryId,
   isStory,
   Root,
   isRoot,
+  StoriesRaw,
 } from '../lib/stories';
 
 import { Args, ModuleFn } from '../index';
@@ -299,7 +300,7 @@ export const init: ModuleFn = ({
       }
     });
 
-    fullAPI.on(SET_STORIES, function handleSetStories(data: { stories: StoriesRaw }) {
+    fullAPI.on(SET_STORIES, function handleSetStories(data: StoryStoreData | StoriesRaw) {
       // the event originates from an iframe, event.source is the iframe's location origin + pathname
       const { storyId } = store.getState();
       const { source }: { source: string } = this;
@@ -308,11 +309,9 @@ export const init: ModuleFn = ({
       switch (sourceType) {
         // if it's a local source, we do nothing special
         case 'local': {
-          fullAPI.setStories(data.stories);
-          const options = storyId
-            ? fullAPI.getParameters(storyId, 'options')
-            : fullAPI.getParameters(Object.keys(data.stories)[0], 'options');
-          fullAPI.setOptions(options);
+          fullAPI.setStoryStoreData(data);
+
+          fullAPI.setOptions((data as StoryStoreData).globalParameters.options);
           break;
         }
 
